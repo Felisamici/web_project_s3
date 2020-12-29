@@ -70,13 +70,14 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
-
+        dump($credentials);
+        dump($user->getPassword());
         return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        dump($credentials['password']);
+        dump($credentials);
         dump($user->getPassword());
         return $credentials['name'] == $user->getUsername() && $credentials['password'] == $user->getPassword();
     }
