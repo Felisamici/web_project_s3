@@ -76,7 +76,8 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return $credentials['email'] == $user->getUsername() && $credentials['password'] == $user->getPassword();
+        $pwd = sha1($credentials['password']);
+        return $credentials['email'] == $user->getUsername() && $pwd == $user->getPassword();
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
