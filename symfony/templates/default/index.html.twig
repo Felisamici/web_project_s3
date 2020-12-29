@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<span> 
+{% if app.user %}
+    Salut {{ app.user.name }} 
+{% endif %}
+</span>
+{% endblock %}
