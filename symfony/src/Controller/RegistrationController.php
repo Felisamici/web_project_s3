@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Country;
 use App\Form\RegistrationFormType;
 use App\Security\AppCustomAuthenticator;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +23,16 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, AppCustomAuthenticator $authenticator): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $entityManager = $this->getDoctrine()->getManager();
+        $countries = $this->getDoctrine()->getManager()->getRepository(Country::class)->findAll();
+        $form = $this->createForm(RegistrationFormType::class, $user)
+        ->add('country', ChoiceType::class, [
+            'mapped' => false,
+            'choice_label' => function ($value) {
+                return $value->getName();
+            },
+            'choices' => $countries,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -34,7 +45,8 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $user->setCountry($form->get('country')->getData());
+
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
