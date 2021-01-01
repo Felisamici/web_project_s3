@@ -2,7 +2,7 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Bienvenue !{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
@@ -16,6 +16,7 @@
             -
             <a href="{{ path('app_login')}}">Connexion</a>
         {% endif %}
+        -
         <a href="{{ path('about') }}">À propos</a>
         <hr/>
         {% block body %}{% endblock %}

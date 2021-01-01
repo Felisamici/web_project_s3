@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html.twig' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+{% block title %}À propos {% endblock %}
+{% block stylesheets %}
     <style>
         * {
             margin:0;padding:0;
@@ -40,9 +37,9 @@
             text-shadow:1px 1px 1px  black;
         }
     </style>
-</head>
+{% endblock %}
 
-<body>
+{% block body %}
 
     <h1>Groupe : S3-B</h1>
     <h2>AGUILA--MULTNER Adrien - COFFINOT Eliott</h2>
@@ -85,8 +82,8 @@
                 <th>Une page présentant l'ensemble des séries de la base de
                     données, l'affichage doit être paginé et il doit être possible de
                     rechercher des séries</th>
-                <td>X</td>
                 <td></td>
+                <td>X</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -187,6 +184,4 @@
             </tr>
         </tbody>
     </table>
-</body>
-
-</html>
+{% endblock %}
