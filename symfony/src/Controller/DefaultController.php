@@ -18,4 +18,14 @@ class DefaultController extends AbstractController
             'controller_name' => 'DefaultController',
         ]);
     }
+
+    /**
+     * @Route("/about", name="about")
+     */
+    public function aPropos(): Response
+    {
+        return $this->render('modele.html.twig', [
+            'controller_name' => 'DefaultController',
+        ]);
+    }
 }

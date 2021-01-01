@@ -6,7 +6,7 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <a href="{{ path('index')}}">Accueil</a>
+        <a href="{{ path('index') }}">Accueil</a>
         -
         {% if app.user %}
             [{{ app.user.name }} , {{ app.user.country.name }}]
@@ -16,6 +16,7 @@
             -
             <a href="{{ path('app_login')}}">Connexion</a>
         {% endif %}
+        <a href="{{ path('about') }}">À propos</a>
         <hr/>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
