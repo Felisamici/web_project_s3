@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Series index{% endblock %}
+
+{% block body %}
+    <h1>Series index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Plot</th>
+                <th>Director</th>
+                <th>YoutubeTrailer</th>
+                <th>YearStart</th>
+                <th>YearEnd</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for series in series %}
+            <tr>
+                <td>{{ series.title }}</td>
+                <td>{{ series.plot }}</td>
+                <td>{{ series.director }}</td>
+                <td><a href="{{ series.youtubeTrailer }}">Click to see trailer</a></td>
+                <td>{{ series.yearStart }}</td>
+                <td>{{ series.yearEnd }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block nav %}
+<nav>
+    {% if page > 0 %}
+    <a href=" {{ path('series_index') }}?page={{ page - 1 }}"><-</a>
+    {% endif %}
+
+    <a href=" {{ path('series_index') }}?page={{ page + 1 }}">-></a>
+</nav>
+{% endblock %}
