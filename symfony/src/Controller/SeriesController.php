@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Genre;
 use App\Entity\Series;
 use App\Form\SeriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,18 +16,40 @@ use Symfony\Component\Routing\Annotation\Route;
 class SeriesController extends AbstractController
 {
     /**
-     * @Route("/", name="series_index", methods={"GET"})
+     * @Route("/", name="series_index", methods={"GET", "POST"})
      */
     public function index(Request $request): Response
     {
         $page = $request->query->get('page');
         $page = $page == NULL ? 0 : $page;
-        $series = $this->getDoctrine()
-            ->getRepository(Series::class)
-            ->findBy([], ['title' => 'ASC'], 10, $page * 10);
+        
+        $repository = $this->getDoctrine()
+        ->getRepository(Series::class);
+
+        $query = $repository->createQueryBuilder('s')
+        ->orderBy('s.title');
+        
+        if($searchedTitle = $request->request->get('title')) {
+            $query = $query->where('s.title LIKE :title')
+            ->setParameter('title', '%'.$searchedTitle.'%');
+        }
+
+        $series = $query->getQuery()->execute();
+
+        
+        if($searchedGenre = $request->request->get('genre')) {
+            $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
+            $genre_series = $genre->getSeries();
+            $series = array_intersect($series, $genre_series->slice(0));
+        }
+
+        $genres = $this->getDoctrine()
+            ->getRepository(Genre::class)
+            ->findAll();
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'genres' => $genres,
             'page' => $page,
         ]);
     }
