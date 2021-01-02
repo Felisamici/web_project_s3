@@ -34,6 +34,7 @@ class RatingController extends AbstractController
     public function new(Request $request): Response
     {
         $rating = new Rating();
+        $rating->setUser($this->getUser());
         $form = $this->createForm(RatingType::class, $rating);
         $form->handleRequest($request);
 

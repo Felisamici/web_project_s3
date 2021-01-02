@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -127,5 +128,8 @@ class Rating
         return $this;
     }
 
-
+    public function __construct()
+    {
+        $this->date = new DateTime();
+    }
 }

@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Rating;
+//use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,10 +15,8 @@ class RatingType extends AbstractType
     {
         $builder
             ->add('value')
-            ->add('comment')
-            ->add('date')
+            ->add('comment', TextareaType::class)
             ->add('series')
-            ->add('user')
         ;
     }
 
