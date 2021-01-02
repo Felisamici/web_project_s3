@@ -29,6 +29,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('country')
             ->add('country', ChoiceType::class, [
                 'mapped' => false,
                 'choice_label' => function ($value) {

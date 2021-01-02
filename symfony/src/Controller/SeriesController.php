@@ -29,7 +29,7 @@ class SeriesController extends AbstractController
         $query = $repository->createQueryBuilder('s')
         ->orderBy('s.title');
         
-        if($searchedTitle = $request->request->get('title')) {
+        if( ($searchedTitle = $request->request->get('title')) != '') {
             $query = $query->where('s.title LIKE :title')
             ->setParameter('title', '%'.$searchedTitle.'%');
         }
