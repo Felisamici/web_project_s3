@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Series;
+use App\Entity\Rating;
 use App\Form\SeriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,6 +66,16 @@ class SeriesController extends AbstractController
     }
 
     /**
+     * @Route("/{series}", name="series_rating", methods={"GET"})
+     */
+    public function rating(Series $series) : Response
+    {
+        return  $this->render('series/rating.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
+    /**
      * @Route("/{id}/edit", name="series_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Series $series): Response
@@ -97,4 +108,6 @@ class SeriesController extends AbstractController
 
         return $this->redirectToRoute('series_index');
     }
+
+    
 }

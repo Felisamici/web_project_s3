@@ -21,12 +21,13 @@ class RatingController extends AbstractController
     {
         $ratings = $this->getDoctrine()
             ->getRepository(Rating::class)
-            ->findAll();
+            ->findBy([], ['value' => 'ASC']);
 
         return $this->render('rating/index.html.twig', [
             'ratings' => $ratings,
         ]);
     }
+
 
     /**
      * @Route("/new", name="rating_new", methods={"GET","POST"})

@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>User</th>
                 <th>Value</th>
                 <th>Comment</th>
                 <th>Date</th>
@@ -18,7 +18,7 @@
         <tbody>
         {% for rating in ratings %}
             <tr>
-                <td>{{ rating.id }}</td>
+                <td>{{ rating.user.name }}</td>
                 <td>{{ rating.value }}</td>
                 <td>{{ rating.comment }}</td>
                 <td>{{ rating.date ? rating.date|date('Y-m-d H:i:s') : '' }}</td>

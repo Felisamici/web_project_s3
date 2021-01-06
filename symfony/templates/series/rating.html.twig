@@ -1,20 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des séries{% endblock %}
+{% block title %} {% endblock %}
 
 {% block body %}
-    <h1>Series index</h1>
+    <h1>Notes de la série "{{ series.title }} </h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Plot</th>
-                <th>Director</th>
-                <th>YoutubeTrailer</th>
-                <th>YearStart</th>
-                <th>YearEnd</th>
-                <th>Notes<th>
+                <th>{{ rating.value }}</th>
+                <th>{{ rating.comment }}</th>
+                <th>{{ rating.date }}</th>
+                <th>{{ rating.user }}</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +23,7 @@
                 <td><a href="{{ series.youtubeTrailer }}">Click to see trailer</a></td>
                 <td>{{ series.yearStart }}</td>
                 <td>{{ series.yearEnd }}</td>
-                <td><a href="{{ path('series_show', {'id': series.id}) }}">show</a></td>
+                <td><a href="/rating/{{ series.id }}">Click to see the ratings</a></td>
             </tr>
         {% else %}
             <tr>
