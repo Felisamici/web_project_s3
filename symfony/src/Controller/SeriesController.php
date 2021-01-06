@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/series")
@@ -18,10 +19,10 @@ class SeriesController extends AbstractController
     /**
      * @Route("/", name="series_index", methods={"GET", "POST"})
      */
-    public function index(Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $page = $request->query->get('page');
-        $page = $page == NULL ? 0 : $page;
+        $page = $page == NULL ? 1 : $page;
         
         $repository = $this->getDoctrine()
         ->getRepository(Series::class);
@@ -33,16 +34,31 @@ class SeriesController extends AbstractController
             $query = $query->where('s.title LIKE :title')
             ->setParameter('title', '%'.$searchedTitle.'%');
         }
-
-        $series = $query->getQuery()->execute();
-
         
-        if($searchedGenre = $request->request->get('genre')) {
+        $series = $query->getQuery()->execute();
+  
+        $searchedGenre = $request->request->get('genre'); // Nouvelle recherche
+
+        /* Variable de session pour garder une recherche active lors d'un changement de page */
+        if(session_status() !== PHP_SESSION_ACTIVE) {  
+            session_start();
+        }
+        
+        // Garder l'ancienne recherche
+        if($searchedGenre ===NULL and isset($_SESSION['searchedGenre'])) {
+            $searchedGenre = $_SESSION['searchedGenre'];
+        }
+
+        /* Enlever les séries qui n'ont pas le genre recherché */
+        if($searchedGenre !== NULL and $searchedGenre != 'Nothing') {
+            $_SESSION['searchedGenre'] = $searchedGenre;
             $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
             $genre_series = $genre->getSeries();
             $series = array_intersect($series, $genre_series->slice(0));
         }
 
+        $series = $paginator->paginate($series, $page, 10);
+        
         $genres = $this->getDoctrine()
             ->getRepository(Genre::class)
             ->findAll();
@@ -119,5 +135,16 @@ class SeriesController extends AbstractController
         }
 
         return $this->redirectToRoute('series_index');
+    }
+
+    /**
+     * @Route("/poster/{id}" , name="poster")
+     */
+    public function poster(Request $request, $id): Response
+    {
+        $poster = $this->getDoctrine()->getRepository(Series::class)
+                ->findOneBy(['id' => $id])->getPoster();
+        $response = new Response(stream_get_contents($poster), 200, ['Content-type' => 'img/jpg']);
+        return $response;
     }
 }

@@ -12,7 +12,7 @@
         </br>
         Par genre :
         <select name="genre">
-            <option></option>
+            <option>Nothing</option>
         {% for genre in genres %}
             <option>{{ genre.name }}</option>
         {% endfor %}
@@ -32,22 +32,13 @@
         <thead>
             <tr>
                 <th>Title</th>
-                <th>Plot</th>
-                <th>Director</th>
-                <th>YoutubeTrailer</th>
-                <th>YearStart</th>
-                <th>YearEnd</th>
+                <th>Poster</th>
             </tr>
         </thead>
         <tbody>
         {% for series in series %}
             <tr>
                 <td>{{ series.title }}</td>
-                <td>{{ series.plot }}</td>
-                <td>{{ series.director }}</td>
-                <td><a href="{{ series.youtubeTrailer }}">Click to see trailer</a></td>
-                <td>{{ series.yearStart }}</td>
-                <td>{{ series.yearEnd }}</td>
             </tr>
         {% else %}
             <tr>
@@ -60,11 +51,7 @@
 {% endblock %}
 
 {% block nav %}
-<nav>
-    {% if page > 0 %}
-    <a href=" {{ path('series_index') }}?page={{ page - 1 }}"><-</a>
-    {% endif %}
-
-    <a href=" {{ path('series_index') }}?page={{ page + 1 }}">-></a>
-</nav>
+<div class="navigation">
+    {{ knp_pagination_render(series) }}
+</div>
 {% endblock %}
