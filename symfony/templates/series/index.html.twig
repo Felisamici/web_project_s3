@@ -39,6 +39,7 @@
         {% for series in series %}
             <tr>
                 <td>{{ series.title }}</td>
+                <td><img src={{ path('poster', {'id': series.id} ) }}
             </tr>
         {% else %}
             <tr>
