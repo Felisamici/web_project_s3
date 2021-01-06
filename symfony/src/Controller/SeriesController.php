@@ -109,9 +109,26 @@ class SeriesController extends AbstractController
      */
     public function rating(Series $series) : Response
     {
+        
+        $repository = $this->getDoctrine()
+        ->getRepository(Rating::class);
+
+        $query = $repository->createQueryBuilder('r')
+        ->select('r.value')
+        ->from('Rating', 'r')
+        ->innerJoin('r.series_id', 's', 'WITH', 'r.series_id=s.id')
+        ->where('s.id = :id')
+            ->setParameter('id', $series->getId())
+        ->orderBy('r.value');
+
+        $rating = $query->getQuery()->execute();
+
         return  $this->render('series/rating.html.twig', [
             'series' => $series,
+            'rating' => $rating,
         ]);
+
+
     }
 
     /**
