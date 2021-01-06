@@ -123,7 +123,7 @@ class SeriesController extends AbstractController
      */
     public function rating(Series $series) : Response
     {
-        
+        dump($series->getTitle());
         $repository = $this->getDoctrine()
         ->getRepository(Rating::class);
 
