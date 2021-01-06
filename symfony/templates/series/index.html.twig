@@ -3,7 +3,30 @@
 {% block title %}Liste des séries{% endblock %}
 
 {% block body %}
-    <h1>Series index</h1>
+    <h1>Liste des séries</h1>
+
+    <hr/>
+    Recherche
+
+    <form method="POST">
+        </br>
+        Par genre :
+        <select name="genre">
+            <option></option>
+        {% for genre in genres %}
+            <option>{{ genre.name }}</option>
+        {% endfor %}
+        </select>
+
+        </br>
+        Par titre :
+        <input type="text" name="title"></input>
+        
+        </br>
+        <input type="submit" name="Rechercher"/>
+        <hr/>
+
+    </form>
 
     <table class="table">
         <thead>
