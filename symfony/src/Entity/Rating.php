@@ -132,4 +132,8 @@ class Rating
     {
         $this->date = new DateTime();
     }
+
+    public function dateToString(){
+        return $this->getDate()->format("H:i:s");
+    }
 }

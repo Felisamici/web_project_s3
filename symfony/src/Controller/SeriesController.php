@@ -132,14 +132,14 @@ class SeriesController extends AbstractController
         ->getRepository(Rating::class);
 
         $query = $repository->createQueryBuilder('r')
-        ->select('r.value')
-        ->from('Rating', 'r')
-        ->innerJoin('r.series_id', 's', 'WITH', 'r.series_id=s.id')
+        ->select('r')
+        ->innerJoin('r.series', 's', 'WITH', 'r.series=s.id')
         ->where('s.id = :id')
             ->setParameter('id', $series->getId())
         ->orderBy('r.value');
 
         $rating = $query->getQuery()->execute();
+        dump($rating);
 
         return  $this->render('series/rating.html.twig', [
             'series' => $series,
