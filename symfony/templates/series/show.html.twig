@@ -51,10 +51,15 @@
     <a href="{{ path('series_rating', {'series': series.id}) }}">Rate</a>
 
         {% if app.user.admin %}
-            <a href="{{ path('series_edit', {'id': series.id}) }}"></a>
+            <a href="{{ path('series_edit', {'id': series.id}) }}">Modifier</a>
             {{ include('series/_delete_form.html.twig') }}
         {% endif %}
 
+        {% if following %}
+            <a href={{ path('series_unfollow', {"id": series.id}) }}>Ne plus suivre</a>
+        {% else %}
+            <a href={{ path('series_follow', {"id": series.id}) }}>Suivre</a>
+        {% endif %}
     {% endif %}
 
     
