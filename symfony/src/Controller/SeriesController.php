@@ -30,8 +30,23 @@ class SeriesController extends AbstractController
 
         $query = $repository->createQueryBuilder('s')
         ->orderBy('s.title');
-        
-        if( ($searchedTitle = $request->request->get('title')) != '') {
+
+        /* Variable de session pour garder une recherche active lors d'un changement de page */
+        if(session_status() !== PHP_SESSION_ACTIVE) {  
+            session_start();
+        }
+
+        /* Nouvelle recherche */
+        $searchedTitle = $request->request->get('title');
+        if($searchedTitle != '') {
+            $_SESSION['searchedTitle'] = $searchedTitle;
+
+            $query = $query->where('s.title LIKE :title')
+            ->setParameter('title', '%'.$searchedTitle.'%');
+        /* Ou garder l'ancienne recherche */
+        } else if(isset($_SESSION['searchedTitle'])) {
+            $searchedTitle = $_SESSION['searchedTitle'];
+
             $query = $query->where('s.title LIKE :title')
             ->setParameter('title', '%'.$searchedTitle.'%');
         }
@@ -40,11 +55,6 @@ class SeriesController extends AbstractController
   
         $searchedGenre = $request->request->get('genre'); // Nouvelle recherche
 
-        /* Variable de session pour garder une recherche active lors d'un changement de page */
-        if(session_status() !== PHP_SESSION_ACTIVE) {  
-            session_start();
-        }
-        
         // Garder l'ancienne recherche
         if($searchedGenre === NULL and isset($_SESSION['searchedGenre'])) {
             $searchedGenre = $_SESSION['searchedGenre'];
@@ -99,13 +109,17 @@ class SeriesController extends AbstractController
      */
     public function show(Series $series): Response
     {
+        $step1 = explode('v=', $series->getYoutubeTrailer());
+        $step2 =explode('&',$step1[1]);
+        $youtube_id = $step2[0];
         return $this->render('series/show.html.twig', [
             'series' => $series,
+            'youtube_id' => $youtube_id,
         ]);
     }
 
     /**
-     * @Route("/{series}", name="series_rating", methods={"GET"})
+     * @Route("/rating/{series}", name="series_rating", methods={"GET"})
      */
     public function rating(Series $series) : Response
     {
