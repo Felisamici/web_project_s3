@@ -16,7 +16,6 @@ class RatingType extends AbstractType
         $builder
             ->add('value')
             ->add('comment', TextareaType::class)
-            ->add('series')
         ;
     }
 

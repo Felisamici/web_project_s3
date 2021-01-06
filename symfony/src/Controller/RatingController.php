@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Rating;
+use App\Entity\Series;
 use App\Form\RatingType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,12 +31,13 @@ class RatingController extends AbstractController
 
 
     /**
-     * @Route("/new", name="rating_new", methods={"GET","POST"})
+     * @Route("/new/{series}", name="rating_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Series $series): Response
     {
         $rating = new Rating();
         $rating->setUser($this->getUser());
+        $rating->setSeries($series);
         $form = $this->createForm(RatingType::class, $rating);
         $form->handleRequest($request);
 
@@ -44,11 +46,16 @@ class RatingController extends AbstractController
             $entityManager->persist($rating);
             $entityManager->flush();
 
-            return $this->redirectToRoute('rating_index');
+            return $this->render('series/rating.html.twig', [
+                'rating' => $rating,
+                'series' => $series,
+                'form' => $form->createView(),
+            ]);
         }
 
         return $this->render('rating/new.html.twig', [
             'rating' => $rating,
+            'series' => $series,
             'form' => $form->createView(),
         ]);
     }
