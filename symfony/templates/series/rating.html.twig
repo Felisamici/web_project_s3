@@ -8,28 +8,26 @@
     <table class="table">
         <thead>
             <tr>
-                <th>{{ rating.value }}</th>
-                <th>{{ rating.comment }}</th>
-                <th>{{ rating.date }}</th>
-                <th>{{ rating.user }}</th>
+                <th>Note</th>
+                <th>Commentaire</th>
+                <th>Date</th>
+                <th>Utilisateur</th>
             </tr>
         </thead>
         <tbody>
-        {% for series in series %}
+        {% for rating in rating %}
             <tr>
-                <td>{{ series.title }}</td>
-                <td>{{ series.plot }}</td>
-                <td>{{ series.director }}</td>
-                <td><a href="{{ series.youtubeTrailer }}">Click to see trailer</a></td>
-                <td>{{ series.yearStart }}</td>
-                <td>{{ series.yearEnd }}</td>
-                <td><a href="/rating/{{ series.id }}">Click to see the ratings</a></td>
+                <td>{{ rating.value }}</td>
+                <td>{{ rating.comment }}</td>
+                <td>{{ rating.date }}</td>
+                <td>{{ rating.user }}</td>
             </tr>
         {% else %}
             <tr>
                 <td colspan="11">no records found</td>
             </tr>
         {% endfor %}
+        <a href="{{ path('/rating/rating_new') }}">
         </tbody>
     </table>
 
