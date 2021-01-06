@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {% endblock %}
+{% block title %} WOW {% endblock %}
 
 {% block body %}
     <h1>Notes de la série "{{ series.title }} </h1>
@@ -18,7 +18,9 @@
         {% for rating in rating %}
             <tr>
                 <td>{{ rating.value }}</td>
-                <td>{{ rating.comment }}</td>
+                {% if rating.comment %}
+                    <td>{{ rating.comment }}</td>
+                {% endif %}
                 <td>{{ rating.date }}</td>
                 <td>{{ rating.user }}</td>
             </tr>
@@ -27,7 +29,7 @@
                 <td colspan="11">no records found</td>
             </tr>
         {% endfor %}
-        <a href="{{ path('/rating/rating_new') }}">
+        <a href="{{ path('rating_new') }}">
         </tbody>
     </table>
 
