@@ -46,7 +46,7 @@ class SeriesController extends AbstractController
         }
         
         // Garder l'ancienne recherche
-        if($searchedGenre ===NULL and isset($_SESSION['searchedGenre'])) {
+        if($searchedGenre === NULL and isset($_SESSION['searchedGenre'])) {
             $searchedGenre = $_SESSION['searchedGenre'];
         }
 
