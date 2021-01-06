@@ -8,10 +8,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ series.id }}</td>
-            </tr>
-            <tr>
                 <th>Title</th>
                 <td>{{ series.title }}</td>
             </tr>
@@ -20,12 +16,8 @@
                 <td>{{ series.plot }}</td>
             </tr>
             <tr>
-                <th>Imdb</th>
-                <td>{{ series.imdb }}</td>
-            </tr>
-            <tr>
                 <th>Poster</th>
-                <td>{{ series.poster }}</td>
+                <td><img src={{ path('poster', {'id': series.id}) }}/></td>
             </tr>
             <tr>
                 <th>Director</th>
@@ -33,28 +25,37 @@
             </tr>
             <tr>
                 <th>YoutubeTrailer</th>
-                <td>{{ series.youtubeTrailer }}</td>
+                <td><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></iframe></td>
             </tr>
             <tr>
                 <th>Awards</th>
                 <td>{{ series.awards }}</td>
             </tr>
             <tr>
-                <th>YearStart</th>
-                <td>{{ series.yearStart }}</td>
-            </tr>
-            <tr>
-                <th>YearEnd</th>
-                <td>{{ series.yearEnd }}</td>
-            </tr>
+                <th>Dates</th>
+                <td>{{ series.yearStart }} - {% if series.yearEnd %} 
+                                                {{ series.yearEnd }} 
+                                             {% else %}
+                                                ? 
+                                             {% endif %}
+           </tr> 
         </tbody>
     </table>
 
-    <a href="{{ path('series_index') }}">back to list</a>
+    <a href="{{ path('series_index') }}">Retour à la liste</a>
 
-    <a href="{{ path('series_edit', {'id': series.id}) }}">edit</a>
+    
+    
 
+    {% if app.user %}
     <a href="{{ path('series_rating', {'series': series.id}) }}">Rate</a>
 
-    {{ include('series/_delete_form.html.twig') }}
+        {% if app.user.admin %}
+            <a href="{{ path('series_edit', {'id': series.id}) }}"></a>
+            {{ include('series/_delete_form.html.twig') }}
+        {% endif %}
+
+    {% endif %}
+
+    
 {% endblock %}

@@ -38,9 +38,8 @@
         <tbody>
         {% for series in series %}
             <tr>
-                <td>{{ series.title }}</td>
-                <td><img src={{ path('poster', {'id': series.id} ) }}></td>
-                <td><a href="{{ path('series_show', {'id': series.id}) }}">Show</a></td>
+                <td><a href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></td>
+                <td><img src={{ path('poster', {'id': series.id} ) }}
             </tr>
         {% else %}
             <tr>
