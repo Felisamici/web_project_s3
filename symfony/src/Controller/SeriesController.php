@@ -109,12 +109,17 @@ class SeriesController extends AbstractController
      */
     public function show(Series $series): Response
     {
+        /* youtube video id */
         $step1 = explode('v=', $series->getYoutubeTrailer());
         $step2 =explode('&',$step1[1]);
         $youtube_id = $step2[0];
+
+        $isFollowing = $this->getUser()->getSeries()->contains($series);
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'youtube_id' => $youtube_id,
+            'following' => $isFollowing,
         ]);
     }
 
@@ -187,5 +192,31 @@ class SeriesController extends AbstractController
                 ->findOneBy(['id' => $id])->getPoster();
         $response = new Response(stream_get_contents($poster), 200, ['Content-type' => 'img/jpg']);
         return $response;
+    }
+
+    /**
+     * @Route("/follow/{id}", name="series_follow")
+     */
+    public function follow(Request $request, $id): Response
+    {
+        $serie = $this->getDoctrine()->getRepository(Series::class)
+                ->findOneBy(['id' => $id]);
+
+        $serie->addUser($this->getUser());
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('series_show', ['id' => $id]);
+    }
+
+    /**
+     * @Route("/unfollow/{id}", name="series_unfollow")
+     */
+    public function unfollow(Request $request, $id): Response
+    {
+        $serie = $this->getDoctrine()->getRepository(Series::class)
+                ->findOneBy(['id' => $id]);
+        
+        $serie->removeUser($this->getUser());
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('series_show', ['id' => $id]);
     }
 }
