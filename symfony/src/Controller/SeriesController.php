@@ -36,36 +36,44 @@ class SeriesController extends AbstractController
             session_start();
         }
 
-        /* Nouvelle recherche */
-        $searchedTitle = $request->request->get('title');
-        if($searchedTitle != '') {
-            $_SESSION['searchedTitle'] = $searchedTitle;
+        if(!isset($_POST['reset']) || $_POST['reset'] !== 'Yes') {
+            /* Nouvelle recherche */
+            $searchedTitle = $request->request->get('title');
+            if($searchedTitle != '') {
+                $_SESSION['searchedTitle'] = $searchedTitle;
 
-            $query = $query->where('s.title LIKE :title')
-            ->setParameter('title', '%'.$searchedTitle.'%');
-        /* Ou garder l'ancienne recherche */
-        } else if(isset($_SESSION['searchedTitle'])) {
-            $searchedTitle = $_SESSION['searchedTitle'];
+                $query = $query->where('s.title LIKE :title')
+                ->setParameter('title', '%'.$searchedTitle.'%');
+            /* Ou garder l'ancienne recherche */
+            } else if(isset($_SESSION['searchedTitle'])) {
+                $searchedTitle = $_SESSION['searchedTitle'];
 
-            $query = $query->where('s.title LIKE :title')
-            ->setParameter('title', '%'.$searchedTitle.'%');
+                $query = $query->where('s.title LIKE :title')
+                ->setParameter('title', '%'.$searchedTitle.'%');
+            }
+        } else {
+            unset($_POST['searchedTitle']);
         }
-        
+
         $series = $query->getQuery()->execute();
   
-        $searchedGenre = $request->request->get('genre'); // Nouvelle recherche
+        if(!isset($_POST['reset']) || $_POST['reset'] !== 'Yes') {
+            $searchedGenre = $request->request->get('genre'); // Nouvelle recherche
 
-        // Garder l'ancienne recherche
-        if($searchedGenre === NULL and isset($_SESSION['searchedGenre'])) {
-            $searchedGenre = $_SESSION['searchedGenre'];
-        }
+            // Garder l'ancienne recherche
+            if($searchedGenre === NULL and isset($_SESSION['searchedGenre'])) {
+                $searchedGenre = $_SESSION['searchedGenre'];
+            }
 
-        /* Enlever les séries qui n'ont pas le genre recherché */
-        if($searchedGenre !== NULL and $searchedGenre != 'Nothing') {
-            $_SESSION['searchedGenre'] = $searchedGenre;
-            $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
-            $genre_series = $genre->getSeries();
-            $series = array_intersect($series, $genre_series->slice(0));
+            /* Enlever les séries qui n'ont pas le genre recherché */
+            if($searchedGenre !== NULL and $searchedGenre != '') {
+                $_SESSION['searchedGenre'] = $searchedGenre;
+                $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
+                $genre_series = $genre->getSeries();
+                $series = array_intersect($series, $genre_series->slice(0));
+            }
+        } else {
+            unset($_POST['searchedGenre']);
         }
 
         $series = $paginator->paginate($series, $page, 10);
@@ -105,6 +113,22 @@ class SeriesController extends AbstractController
     }
 
     /**
+     * @Route("/your_series", name="user_series")
+     */
+    public function userSeries(Request $request): Response
+    {
+        if($this->getUser() === NULL) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $series = $this->getUser()->getSeries();
+
+        return $this->render('series/user_index.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
+    /**
      * @Route("/{id}", name="series_show", methods={"GET"})
      */
     public function show(Series $series): Response
@@ -114,7 +138,8 @@ class SeriesController extends AbstractController
         $step2 =explode('&',$step1[1]);
         $youtube_id = $step2[0];
 
-        $isFollowing = $this->getUser()->getSeries()->contains($series);
+        $user = $this->getUser();
+        $isFollowing = $user == NULL ? false : $user->getSeries()->contains($series);
 
         return $this->render('series/show.html.twig', [
             'series' => $series,

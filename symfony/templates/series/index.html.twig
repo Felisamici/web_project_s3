@@ -12,7 +12,7 @@
         </br>
         Par genre :
         <select name="genre">
-            <option>Nothing</option>
+            <option></option>
         {% for genre in genres %}
             <option>{{ genre.name }}</option>
         {% endfor %}
@@ -23,6 +23,8 @@
         <input type="text" name="title"></input>
         
         </br>
+        Annuler la recherche ?
+        <input type="checkbox" name="reset" value="Yes">
         <input type="submit" name="Rechercher"/>
         <hr/>
 
@@ -39,7 +41,7 @@
         {% for series in series %}
             <tr>
                 <td><a href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></td>
-                <td><img src={{ path('poster', {'id': series.id} ) }}
+                <td><img src={{ path('poster', {'id': series.id} ) }}></td>
             </tr>
         {% else %}
             <tr>

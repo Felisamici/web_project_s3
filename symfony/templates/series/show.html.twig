@@ -39,6 +39,13 @@
                                                 ? 
                                              {% endif %}
            </tr> 
+           <tr>
+            <th> Seasons </th>
+            <td>
+            {% for season in series.seasons %}
+                <li><a href={{ path('season_show', {'id': season.id}) }}>   {{ season.number }} </a></li>
+            {% endfor %}
+            </td>
         </tbody>
     </table>
 
