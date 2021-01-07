@@ -9,8 +9,10 @@
         <a href="{{ path('index') }}">Accueil</a>
         -
         {% if app.user %}
-            [{{ app.user.name }} , {{ app.user.country.name }}]
+            <a href="{{ path('profile') }}">Mon profil</a>
+            -
             <a href="{{ path('app_logout')}}">Déconnexion</a>
+            -
             <a href="{{ path('user_series') }}">Mes séries</a>
         {% else %}
             <a href="{{ path('app_register')}}">Inscription</a>
