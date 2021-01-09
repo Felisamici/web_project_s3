@@ -46,7 +46,7 @@ class RatingController extends AbstractController
             $entityManager->persist($rating);
             $entityManager->flush();
 
-            return $this->redirectToRoute('series_rating');
+            return $this->redirectToRoute('series_rating', ['series' => $series->getId()]);
         }
 
         return $this->render('rating/new.html.twig', [
