@@ -141,10 +141,21 @@ class SeriesController extends AbstractController
         $user = $this->getUser();
         $isFollowing = $user == NULL ? false : $user->getSeries()->contains($series);
 
+        $repositoryAVG = $this->getDoctrine()
+        ->getRepository(Rating::class);
+
+        $queryAVG = $repositoryAVG->createQueryBuilder('g')
+            ->select('avg(g.value)')
+            ->where('g.series = :id')
+            ->setParameter('id', $series->getId());
+        
+        $avg = $queryAVG->getQuery()->execute();
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'youtube_id' => $youtube_id,
             'following' => $isFollowing,
+            'avg' => $avg[0][1],
         ]);
     }
 
