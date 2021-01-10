@@ -1,14 +1,11 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<span> 
 {% if app.user %}
     <span>Bonjour {{ app.user.name }} !</span>
 {% else %}
     <span>Bonjour ! Connectez-vous ou inscrivez-vous pour avoir accès à toutes les fonctionnalités.</span>
 {% endif %}
 
-<h2><a href=" {{ path('series_index') }} ">Séries</h2></a>
+<h2><a href=" {{ path('series_index') }} ">Voir les séries</h2></a>
 
-
-</span>
 {% endblock %}

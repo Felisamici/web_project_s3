@@ -8,11 +8,11 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Title</th>
+                <th>Titre</th>
                 <td>{{ series.title }}</td>
             </tr>
             <tr>
-                <th>Plot</th>
+                <th>Synopsis</th>
                 <td>{{ series.plot }}</td>
             </tr>
             <tr>
@@ -20,15 +20,15 @@
                 <td><img src={{ path('poster', {'id': series.id}) }}/></td>
             </tr>
             <tr>
-                <th>Director</th>
+                <th>Directeur</th>
                 <td>{{ series.director }}</td>
             </tr>
             <tr>
-                <th>YoutubeTrailer</th>
+                <th>Bande-annonce</th>
                 <td><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></iframe></td>
             </tr>
             <tr>
-                <th>Awards</th>
+                <th>Récompenses</th>
                 <td>{{ series.awards }}</td>
             </tr>
             <tr>
@@ -40,7 +40,7 @@
                                              {% endif %}
            </tr> 
            <tr>
-            <th> Seasons </th>
+            <th> Saisons </th>
             <td>
             {% for season in series.seasons %}
                 <li><a href={{ path('season_show', {'id': season.id}) }}>   {{ season.number }} </a></li>
@@ -55,7 +55,7 @@
     
 
     {% if app.user %}
-    <a href="{{ path('series_rating', {'series': series.id}) }}">Rate</a>
+    <a href="{{ path('series_rating', {'series': series.id}) }}">Noter</a>
 
         {% if app.user.admin %}
             <a href="{{ path('series_edit', {'id': series.id}) }}">Modifier</a>

@@ -7,5 +7,5 @@ Nom d'utilisateur : {{ app.user.name }} </br>
 E-mail : {{ app.user.email }} </br>
 Pays : {{ app.user.country.name }} </br>
 Role : {% if app.user.admin %} Admin {% else %} Utilisateur {% endif %} </br>
-Date d'inscription : {{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }} jours) </br>
+Date d'inscription : {{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }}) </br>
 {% endblock %}

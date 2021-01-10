@@ -6,10 +6,9 @@
     <h1>Liste des séries</h1>
 
     <hr/>
-    Recherche
+    <h3>Recherche</h3>
 
     <form method="POST">
-        </br>
         Par genre :
         <select name="genre">
             <option></option>
@@ -25,7 +24,7 @@
         </br>
         Annuler la recherche ?
         <input type="checkbox" name="reset" value="Yes">
-        <input type="submit" name="Rechercher"/>
+        <input type="submit" value="Rechercher">
         <hr/>
 
     </form>
@@ -33,7 +32,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Title</th>
+                <th>Titre</th>
                 <th>Poster</th>
             </tr>
         </thead>
@@ -45,7 +44,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">no records found</td>
+                <td colspan="11">Aucune série trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>

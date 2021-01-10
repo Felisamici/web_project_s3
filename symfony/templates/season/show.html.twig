@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Season{% endblock %}
+{% block title %}Saison{% endblock %}
 
 {% block body %}
     <h1>Season</h1>
@@ -8,19 +8,19 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Serie</th>
+                <th>Série</th>
                 <td>{{ season.series.title }}</td>
             </tr>
             <tr>
-                <th>Number</th>
+                <th>Numéro</th>
                 <td>{{ season.number }}</td>
             </tr>
             <tr>
-                <th>Episodes</th>
+                <th>Épisodes</th>
                 <td>
                     <ul>
                     {% for episode in season.episodes %}
-                        <li>{{ episode.number }} : {{ episode.title }} | Rating : {{ episode.imdbrating}}</li>
+                        <li>{{ episode.number }} : {{ episode.title }} | Note : {{ episode.imdbrating }}</li>
                     {% endfor %}
                     </ul>
                 </td>
@@ -31,7 +31,7 @@
     <a href="{{ path('series_show', {"id": season.series.id}) }}">Retour à la série</a>
     {% if app.user %}
         {% if app.user.admin %}
-            <a href="{{ path('season_edit', {'id': season.id}) }}">edit</a>
+            <a href="{{ path('season_edit', {'id': season.id}) }}">Éditer</a>
             {{ include('season/_delete_form.html.twig') }}
         {% endif %}
     {% endif %}
