@@ -27,7 +27,30 @@
 
         {{ form_row(registrationForm.captcha) }}
         
+        <span id="currentRole">Inscription en tant qu'utilisateur</span> 
+        {{ form_row(registrationForm.adminButton) }}
+        </br>
         <button type="submit" class="btn">S'inscrire</button>
     {{ form_end(registrationForm) }}
+
+
+    <script type="text/javascript">
+    function askAdmin() {
+        do {
+            var stop = true;
+            var input = prompt("Veuillez entrer le mot de passe administrateur");
+            if(input != null) {
+                if(input == "thisisadminpassword") { 
+                    document.getElementById('registration_form_admin').value = "true";
+                    document.getElementById('currentRole').textContent = "Inscription en tant qu'admin.";
+                    document.getElementById('registration_form_adminButton').remove();
+                } else {
+                    stop = false;
+                    alert("Mot de passe incorrect.");
+                }
+            }
+        } while(!stop);
+    }
+    </script>
 
 {% endblock %}

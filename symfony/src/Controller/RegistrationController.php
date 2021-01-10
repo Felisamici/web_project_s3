@@ -9,6 +9,8 @@ use App\Security\AppCustomAuthenticator;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,6 +35,7 @@ class RegistrationController extends AbstractController
             },
             'choices' => $countries,
         ]);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -46,6 +49,10 @@ class RegistrationController extends AbstractController
             );
 
             $user->setCountry($form->get('country')->getData());
+            
+            if($form->get('admin')->getData() == "true") {
+                $user->setAdmin(true);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

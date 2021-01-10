@@ -8,11 +8,11 @@
     <table class="table">
         <thead>
             <tr>
-                <th>User</th>
-                <th>Value</th>
-                <th>Comment</th>
+                <th>Utilisateur</th>
+                <th>Valeur</th>
+                <th>Commentaire</th>
                 <th>Date</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -22,10 +22,6 @@
                 <td>{{ rating.value }}</td>
                 <td>{{ rating.comment }}</td>
                 <td>{{ rating.date ? rating.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('rating_show', {'id': rating.id}) }}">show</a>
-                    <a href="{{ path('rating_edit', {'id': rating.id}) }}">edit</a>
-                </td>
             </tr>
         {% else %}
             <tr>
@@ -36,4 +32,8 @@
     </table>
 
     <a href="{{ path('rating_new') }}">Create new</a>
+
+    {% if app.user.admin %}
+        {{ include('rating/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}
