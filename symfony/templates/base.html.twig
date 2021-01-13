@@ -14,9 +14,9 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="{{ path('index') }}">Accueil</a>
                 {% if app.user %}
-                    <a class="nav-item nav-link" href="{{ path('profile') }}">Mon profil</a>
-                    <a class="nav-item nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
+                    <a class="nav-item nav-link" href="{{ path('profile') }}">{{ app.user }}</a>
                     <a class="nav-item nav-link" href="{{ path('user_series') }}">Mes séries</a>
+                    <a class="nav-item nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
                 {% else %}
                     <a class="nav-item nav-link" href="{{ path('app_register')}}">Inscription</a>
                     <a class="nav-item nav-link" href="{{ path('app_login')}}">Connexion</a>

@@ -8,7 +8,7 @@
     <hr/>
     <h3>Recherche</h3>
 
-    <form method="POST">
+    <form method="GET">
         Par genre :
         <select name="genre">
             <option></option>
@@ -21,13 +21,11 @@
         Par titre :
         <input type="text" name="title"></input>
         
-        </br>
-        Annuler la recherche ?
-        <input type="checkbox" name="reset" value="Yes">
         <input type="submit" value="Rechercher">
-        <hr/>
 
     </form>
+    <a href="{{ path('series_index') }}" class="btn btn-dark">Annuler la recherche</a>
+    </hr>
 
     <div class="container">
         <div class="row">
@@ -44,7 +42,9 @@
 {% endblock %}
 
 {% block nav %}
+{% set params=app.request.query.all %}
+
 <div class="navigation">
-    {{ knp_pagination_render(series) }}
+    {{ knp_pagination_render(series, '', app.request.query.all) }}
 </div>
 {% endblock %}
