@@ -10,8 +10,10 @@
             <h1>Liste des séries</h1>
         </div>
         <div class="col-md-4"></div>
-        {% if app.user.admin %}
-        <div class="col-md-1"><a href=" {{ path('series_new') }}" class="btn btn-primary">Ajouter une série</a></div>
+        {% if app.user %}
+            {% if app.user.admin %}
+                <div class="col-md-1"><a href=" {{ path('series_new') }}" class="btn btn-primary">Ajouter une série</a></div>
+            {% endif %}
         {% endif %}
     </div>
 
@@ -21,35 +23,59 @@
     </div>
 
     <form method="GET">
-        <div class="row text-center">
+        <div class="row my-2">
             <div class="col">
-                Par genre :
-                <select name="genre">
-                <option></option>
-                {% for genre in genres %}
-                    <option>{{ genre.name }}</option>
-                {% endfor %}
-                </select>
+                <div class="row">
+                    <div class="col text-center">
+                        Par genre :
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col text-center">
+                        <select name="genre">
+                        <option></option>
+                        {% for genre in genres %}
+                            <option>{{ genre.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row text-center">
+        <div class="row my-2">
             <div class="col">
-                Par titre :
-                <input type="text" name="title"></input>
+                <div class="row">
+                    <div class="col text-center">
+                        Par titre :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <input type="text" name="title"></input>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row text-center">
+        <div class="row text-center my-2">
             <div class="col"> 
                 <input type="submit" value="Rechercher">
             </div>
         </div>
     </form>
 
-    <div class="row text-center mb-5">
+    <div class="row text-center my-2">
         <div class="col">
             <a href="{{ path('series_index') }}" class="btn btn-dark">Annuler la recherche</a>
         </div>
     </div>
+
+    <hr class="my-4"/>
+
+{% set params=app.request.query.all %}
+
+<div class="navigation">
+    {{ knp_pagination_render(series, '', app.request.query.all) }}
+</div>
 
     <div class="row mx-md-n4">
         {% for series in series %}
@@ -67,12 +93,4 @@
             <div class="col-md-12 text-center">Aucune série trouvée.</div>
         {% endfor %}
     </div>
-{% endblock %}
-
-{% block nav %}
-{% set params=app.request.query.all %}
-
-<div class="navigation">
-    {{ knp_pagination_render(series, '', app.request.query.all) }}
-</div>
 {% endblock %}
