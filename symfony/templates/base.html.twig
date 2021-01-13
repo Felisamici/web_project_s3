@@ -13,8 +13,9 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="{{ path('index') }}">Accueil</a>
+                <a class="nav-item nav-link" href="{{ path('series_index') }}">Toutes les séries</a>
                 {% if app.user %}
-                    <a class="nav-item nav-link" href="{{ path('profile') }}">{{ app.user }}</a>
+                    <a class="nav-item nav-link" href="{{ path('profile') }}">Mon profil ({{ app.user }})</a>
                     <a class="nav-item nav-link" href="{{ path('user_series') }}">Mes séries</a>
                     <a class="nav-item nav-link" href="{{ path('app_logout')}}">Déconnexion</a>
                 {% else %}
@@ -22,10 +23,8 @@
                     <a class="nav-item nav-link" href="{{ path('app_login')}}">Connexion</a>
                 {% endif %}
                 <a class="nav-item nav-link" href="{{ path('about') }}">À propos</a>
-                <a class="nav-item nav-link" href="{{ path('series_index') }}">Toutes les séries</a>
             </div>
         </nav>
-        <hr/>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
