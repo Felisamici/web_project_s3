@@ -23,6 +23,7 @@ class RatingType extends AbstractType
                     'max'  => 10,
                     'step' => 0.5,
                 ),
+                'help' => 'La valeur doit être comprise entre 0 et 10',
                 'label' => "Note ",
             ])
             ->add('comment', TextareaType::class, [
