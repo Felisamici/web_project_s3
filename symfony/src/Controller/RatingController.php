@@ -97,6 +97,6 @@ class RatingController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('rating_index');
+        return $this->redirectToRoute('series_rating', ['series' => $rating->getSeries()->getId()]);
     }
 }

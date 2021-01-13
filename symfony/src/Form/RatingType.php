@@ -23,8 +23,11 @@ class RatingType extends AbstractType
                     'max'  => 10,
                     'step' => 0.5,
                 ),
+                'label' => "Note ",
             ])
-            ->add('comment', TextareaType::class)
+            ->add('comment', TextareaType::class, [
+                'label' => "Commentaire ",
+            ])
         ;
     }
 

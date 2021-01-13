@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-{% if app.user %}
-    <span>Bonjour {{ app.user.name }} !</span>
-{% else %}
-    <span>Bonjour ! Connectez-vous ou inscrivez-vous pour avoir accès à toutes les fonctionnalités.</span>
-{% endif %}
+<p class="text-center" style="font-size:large;">
+    {% if app.user %}
+        Bonjour {{ app.user.name }} !
+    {% else %}
+        Bonjour ! Connectez-vous ou inscrivez-vous pour avoir accès à toutes les fonctionnalités.
+    {% endif %}
+</p>
 
-<h2><a href=" {{ path('series_index') }} ">Voir les séries</h2></a>
-
+<div class="d-flex justify-content-center">
+    <a href=" {{ path('series_index') }} " class="btn btn-dark">Voir les séries</a>
+</div>
 {% endblock %}

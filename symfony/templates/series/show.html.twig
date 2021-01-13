@@ -1,77 +1,120 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Series{% endblock %}
+{% block title %}Series
+{% endblock %}
 
 {% block body %}
-    <h1>Series</h1>
+	<h1 class="text-center">{{ series.title }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Titre</th>
-                <td>{{ series.title }}</td>
-            </tr>
-            <tr>
-                <th>Note moyenne</th>
-                <td>{{ avg }}</td>
-            </tr>
-            <tr>
-                <th>Synopsis</th>
-                <td>{{ series.plot }}</td>
-            </tr>
-            <tr>
-                <th>Poster</th>
-                <td><img src={{ path('poster', {'id': series.id}) }}/></td>
-            </tr>
-            <tr>
-                <th>Directeur</th>
-                <td>{{ series.director }}</td>
-            </tr>
-            <tr>
-                <th>Bande-annonce</th>
-                <td><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></iframe></td>
-            </tr>
-            <tr>
-                <th>Récompenses</th>
-                <td>{{ series.awards }}</td>
-            </tr>
-            <tr>
-                <th>Dates</th>
-                <td>{{ series.yearStart }} - {% if series.yearEnd %} 
-                                                {{ series.yearEnd }} 
-                                             {% else %}
-                                                ? 
-                                             {% endif %}
-           </tr> 
-           <tr>
-            <th> Saisons </th>
-            <td>
-            {% for season in series.seasons %}
-                <li><a href={{ path('season_show', {'id': season.id}) }}>   {{ season.number }} </a></li>
-            {% endfor %}
-            </td>
-        </tbody>
-    </table>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col text-center">
+						<u>Synopsis</u>
+					</div>
+				</div>
+				<div class="row text-center">
+					{{ series.plot }}
+				</div>
+				<div class="row"><br/></div>
+				<div class="row">
+					<div class="col text-center">
+						<u>Acteurs</u>
+					</div>
+				</div>
+				<div class="row">
+					<ul>
+						{% for actor in series.actor %}
+							<li>{{ actor }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="row">
+					{% if youtube_id != NULL %}
+						<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>	
+					{% else %}
+					{% endif %}
+				</div>
+			</div>
 
-    <a href="{{ path('series_index') }}">Retour à la liste</a>
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col text-center">
+						<u>Directeur</u>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col text-center">
+						 {% if series.director != '' %} {{ series.director }} {% else %} Inconnu {% endif %}
+					</div>
+				</div>
+				<div class="row"></br></div>
+				<div class="row">
+					<div class="col text-center">
+						<u>Récompenses</u>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col text-center">
+						{{ series.awards }}
+					</div>
+				</div>
+				<div class="row"></br></div>
+				<div class="row">
+					<div class="col text-center">
+						<u>Note moyenne</u>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col text-center">
+						{% if avg != '' %} {{ avg }} {% else %} Aucune note {% endif %}
+					</div>
+				</div>
+				<div class="row"></br></div>
+				<div class="row">
+					<div class="col text-center">
+						<u>Saisons</u>
+					</div>
+				</div>
+				<div class="row"></br></div>
+				<div class="row">
+					<ul class="list-inline">
+						{% for season in series.seasons %}
+							<li class="list-inline-item">
+								<a href={{ path('season_show', {'id': season.id} ) }} class="btn btn-light">{{ season.number }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
 
-    
-    
+			<div class="col-md-4">
+				<img src={{ path('poster', {'id': series.id}) }} placeholder="Poster"/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				
+			</div>
+		</div>
+	</div>
 
-    {% if app.user %}
-    <a href="{{ path('series_rating', {'series': series.id}) }}">Noter</a>
 
-        {% if app.user.admin %}
-            <a href="{{ path('series_edit', {'id': series.id}) }}">Modifier</a>
-            {{ include('series/_delete_form.html.twig') }}
-        {% endif %}
 
-        {% if following %}
-            <a href={{ path('series_unfollow', {"id": series.id}) }}>Ne plus suivre</a>
-        {% else %}
-            <a href={{ path('series_follow', {"id": series.id}) }}>Suivre</a>
-        {% endif %}
-    {% endif %}
+	<div class="text-center">
+		</ul><a class="btn btn-dark" href="{{ path('series_index') }}">Retour à la liste</a>
+		{% if app.user %}
+			<a class="btn btn-dark" href="{{ path('series_rating', {'series': series.id}) }}">Noter</a>
+			{% if following %}
+				<a class="btn btn-dark" href={{ path('series_unfollow', {"id": series.id} ) }}>Ne plus suivre</a>
+			{% else %}
+				<a class="btn btn-dark" href={{ path('series_follow', {"id": series.id} ) }}>Suivre</a>
+			{% endif %}
+			{% if app.user.admin %}
+				{{ include('series/_delete_form.html.twig') }}
+			{% endif %}
+		{% endif %}
+	</div>
 
-    
 {% endblock %}

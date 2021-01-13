@@ -1,11 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Series{% endblock %}
+{% block title %}Ajouter une série{% endblock %}
 
 {% block body %}
-    <h1>Create new Series</h1>
+    <h1>Ajouter une série</h1>
+
+    {% if response != NULL %}
+    {% else %}
+    <span>Série non trouvée.<span>
+    {% endif %}
 
     {{ include('series/_form.html.twig') }}
 
-    <a href="{{ path('series_index') }}">back to list</a>
+    <a href="{{ path('series_index') }}">Retour à la liste</a>
 {% endblock %}

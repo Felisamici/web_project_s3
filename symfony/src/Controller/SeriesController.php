@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Genre;
 use App\Entity\Series;
 use App\Entity\Rating;
+use App\Entity\Actor;
 use App\Form\SeriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
  * @Route("/series")
@@ -76,7 +78,7 @@ class SeriesController extends AbstractController
             unset($_POST['searchedGenre']);
         }
 
-        $series = $paginator->paginate($series, $page, 10);
+        $series = $paginator->paginate($series, $page, 9);
         
         $genres = $this->getDoctrine()
             ->getRepository(Genre::class)
@@ -96,19 +98,76 @@ class SeriesController extends AbstractController
     {
         $series = new Series();
         $form = $this->createForm(SeriesType::class, $series);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($series);
-            $entityManager->flush();
+            if($form->getData('imdb') !== '') {
+                $url = "http://www.omdbapi.com/?apikey=572fd4b3&i=". $form->getData('imdb')->getImdb();
+                
+                $data = ['collection' => 'test'];
+                $r = curl_init($url);
+                curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($r, CURLOPT_POST, true);
+                curl_setopt($r, CURLOPT_POSTFIELDS,  json_encode($data));
 
-            return $this->redirectToRoute('series_index');
+                $response = curl_exec($r);
+                curl_close($r);
+                $response = json_decode($response);
+                dump($response);
+
+                $series->setTitle($response->Title);
+                $series->setPlot($response->Plot);
+                $series->setImdb($response->imdbID);
+                $series->setPoster(fopen($response->Poster, 'rb'));
+                $series->setDirector($response->Director);
+                $series->setAwards($response->Awards);
+
+                $years=explode('–', $response->Year);
+                $series->setYearStart(intval($years[0]));
+                $series->setYearEnd(intval($years[1]));
+
+                /* Ajout des genres */
+                $genresStr = explode(', ', $response->Genre);
+                $queryBuilder = $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g');
+                foreach($genresStr as $g) {
+                    $queryBuilder = $queryBuilder->orWhere("g.name='".$g."'");
+                }
+                $genres = $queryBuilder->getQuery()->execute();
+
+                foreach($genres as $g) {
+                    $series->addGenre($g);
+                }
+
+                /* Ajout des acteurs */
+                $actorsStr = explode(', ', $response->Actors);
+                $queryBuilder = $this->getDoctrine()->getRepository(Actor::class)->createQueryBuilder('a');
+                foreach($actorsStr as $a) {
+                    $queryBuilder = $queryBuilder->orWhere("a.name='".$a."'");
+                }
+                $actors = $queryBuilder->getQuery()->execute();
+
+                foreach($actors as $a) {
+                    $series->addActor($a);
+                }
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($series);
+                $entityManager->flush();
+            }
+
+            return $this->render('series/new.html.twig', [
+                'series' => $series,
+                'form' => $form->createView(),
+                'response' => $response,
+            ]);
+
         }
 
         return $this->render('series/new.html.twig', [
             'series' => $series,
             'form' => $form->createView(),
+            'response' => NULL,
         ]);
     }
 
@@ -133,10 +192,13 @@ class SeriesController extends AbstractController
      */
     public function show(Series $series): Response
     {
+        $youtube_id = NULL;
         /* youtube video id */
-        $step1 = explode('v=', $series->getYoutubeTrailer());
-        $step2 =explode('&',$step1[1]);
-        $youtube_id = $step2[0];
+        if(($trailer = $series->getYoutubeTrailer()) != NULL) {
+            $step1 = explode('v=', $trailer);
+            $step2 =explode('&',$step1[1]);
+            $youtube_id = $step2[0];
+        }
 
         $user = $this->getUser();
         $isFollowing = $user == NULL ? false : $user->getSeries()->contains($series);
@@ -175,7 +237,6 @@ class SeriesController extends AbstractController
         ->orderBy('r.value');
 
         $rating = $query->getQuery()->execute();
-        dump($rating);
 
         return  $this->render('series/rating.html.twig', [
             'series' => $series,

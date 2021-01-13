@@ -1,29 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Series you follow {% endblock %}
+{% block title %} Séries suivies {% endblock %}
 
 {% block body %}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Poster</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for series in series %}
-        <tr>
-            <td><a href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></td>
-            <td><img src={{ path('poster', {'id': series.id} ) }}/></td>
-            <td><a href={{ path('series_unfollow', {"id": series.id})}}>Ne plus suivre</a></td>
-        </tr>
-    {% else %}
-        <tr>
-           <td colspan="11">Aucune série trouvée.</td>
-       </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="container">
+    <div class="row">
+        {% for series in series %}
+        <div class="col-md-4">
+            <div class="row text-center"><a class="btn btn-secondary" href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></div>
+            <div class="row text-center"><img src={{ path('poster', {'id': series.id} ) }}></div>
+        </div>
+        {% else %}
+           <div class="col-md-12 text-center">Aucune série trouvée.</div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
