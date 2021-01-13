@@ -3,11 +3,11 @@
 {% block title %} Profil {% endblock %}
 
 {% block body %}
-<div class="container" style="">
-    <p>Nom d'utilisateur : <mark>{{ app.user.name }}</mark></p> </br>
-    <p>E-mail : <mark>{{ app.user.email }}</mark></p> </br>
-    <p>Pays : <mark>{{ app.user.country.name }}</mark></p> </br>
-    <p>Role : <mark>{% if app.user.admin %} Admin {% else %} Utilisateur {% endif %}</mark></p> </br>
-    <p>Date d'inscription : <mark>{{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }})</mark></p> </br>
+<div class="row text-center">
+    <p class="justify-content-center">Nom d'utilisateur : <mark>{{ app.user.name }}</mark></p> </br>
+    <p class="justify-content-center">E-mail : <mark>{{ app.user.email }}</mark></p> </br>
+    <p class="justify-content-center">Pays : <mark>{{ app.user.country.name }}</mark></p> </br>
+    <p class="justify-content-center">Role : <mark>{% if app.user.admin %} Admin {% else %} Utilisateur {% endif %}</mark></p> </br>
+    <p class="justify-content-center">Date d'inscription : <mark>{{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }})</mark></p> </br>
 </div>
 {% endblock %}
