@@ -26,6 +26,8 @@ class SeriesController extends AbstractController
     {
         $page = $request->query->get('page');
         $page = $page == NULL ? 1 : $page;
+        $searchedGenre = $request->query->get('genre');
+        $searchedTitle = $request->query->get('title');
         
         $repository = $this->getDoctrine()
         ->getRepository(Series::class);
@@ -33,49 +35,19 @@ class SeriesController extends AbstractController
         $query = $repository->createQueryBuilder('s')
         ->orderBy('s.title');
 
-        /* Variable de session pour garder une recherche active lors d'un changement de page */
-        if(session_status() !== PHP_SESSION_ACTIVE) {  
-            session_start();
-        }
-
-        if(!isset($_POST['reset']) || $_POST['reset'] !== 'Yes') {
-            /* Nouvelle recherche */
-            $searchedTitle = $request->request->get('title');
-            if($searchedTitle != '') {
-                $_SESSION['searchedTitle'] = $searchedTitle;
-
-                $query = $query->where('s.title LIKE :title')
+        if($searchedTitle !== NULL and $searchedTitle != '') {
+            $query = $query->where('s.title LIKE :title')
                 ->setParameter('title', '%'.$searchedTitle.'%');
-            /* Ou garder l'ancienne recherche */
-            } else if(isset($_SESSION['searchedTitle'])) {
-                $searchedTitle = $_SESSION['searchedTitle'];
-
-                $query = $query->where('s.title LIKE :title')
-                ->setParameter('title', '%'.$searchedTitle.'%');
-            }
-        } else {
-            unset($_POST['searchedTitle']);
         }
-
+        
         $series = $query->getQuery()->execute();
-  
-        if(!isset($_POST['reset']) || $_POST['reset'] !== 'Yes') {
-            $searchedGenre = $request->request->get('genre'); // Nouvelle recherche
 
-            // Garder l'ancienne recherche
-            if($searchedGenre === NULL and isset($_SESSION['searchedGenre'])) {
-                $searchedGenre = $_SESSION['searchedGenre'];
-            }
-
-            /* Enlever les séries qui n'ont pas le genre recherché */
-            if($searchedGenre !== NULL and $searchedGenre != '') {
-                $_SESSION['searchedGenre'] = $searchedGenre;
-                $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
-                $genre_series = $genre->getSeries();
-                $series = array_intersect($series, $genre_series->slice(0));
-            }
-        } else {
-            unset($_POST['searchedGenre']);
+        /* Enlever les séries qui n'ont pas le genre recherché */
+        if($searchedGenre !== NULL and $searchedGenre != '') {
+            $_SESSION['searchedGenre'] = $searchedGenre;
+            $genre = $this->getDoctrine()->getRepository(Genre::class)->findOneBy(['name' => $searchedGenre], NULL);
+            $genre_series = $genre->getSeries();
+            $series = array_intersect($series, $genre_series->slice(0));
         }
 
         $series = $paginator->paginate($series, $page, 9);
