@@ -22,18 +22,16 @@
                 <td>{{ rating.value }}</td>
                 <td>{{ rating.comment }}</td>
                 <td>{{ rating.date ? rating.date|date('Y-m-d H:i:s') : '' }}</td>
+                {% if app.user and app.user.admin %}
+                    <td>{{ include('rating/_delete_form.html.twig', {'rating': rating}) }}</td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucune note trouvée</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('rating_new') }}">Create new</a>
-
-    {% if app.user.admin %}
-        {{ include('rating/_delete_form.html.twig') }}
-    {% endif %}
 {% endblock %}

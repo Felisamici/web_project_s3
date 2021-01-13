@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} WOW {% endblock %}
+{% block title %} Notes {% endblock %}
 
 {% block body %}
     <h1>Notes de la série "{{ series.title }}" </h1>
+
+    <a href={{ path('series_show', {'id': series.id}) }}>Retour</a> </br>
 
     <table class="table">
         <thead>
@@ -21,13 +23,17 @@
                 <td>{{ rating.comment }}</td>
                 <td>{{ rating.dateToString }}</td>
                 <td>{{ rating.user }}</td>
+                
+                {% if app.user and app.user.admin %}
+                    <td>{{ include('rating/_delete_form.html.twig', {'rating': rating}) }}</td>
+                {% endif %} 
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">no records found</td>
+                <td colspan="11">Aucune note trouvée</td>
             </tr>
         {% endfor %}
-        <a href="{{ path('rating_new' , { 'series' : series.id }) }}">New</a>
+        <a href="{{ path('rating_new' , { 'series' : series.id }) }}">Noter</a>
         </tbody>
     </table>
 
