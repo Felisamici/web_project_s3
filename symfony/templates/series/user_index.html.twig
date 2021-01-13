@@ -4,16 +4,26 @@
 
 {% block body %}
 
-<div class="container">
-    <div class="row">
-        {% for series in series %}
-        <div class="col-md-4">
-            <div class="row text-center"><a class="btn btn-secondary" href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></div>
-            <div class="row text-center"><img src={{ path('poster', {'id': series.id} ) }}></div>
-        </div>
-        {% else %}
-           <div class="col-md-12 text-center">Aucune série trouvée.</div>
-        {% endfor %}
+<div class="row">
+    <div class="col-md-4 offset-md-4 text-center">
+        <h1 class="display-1 border border-dark rounded">Mes séries</h1>
     </div>
+</div>
+
+<div class="row mt-5">
+    {% for series in series %}
+    <div class="col-md-4 px-md-4">
+        <div class="row text-center">
+            <div class="col text-center">
+                <a class="btn btn-secondary" href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a>
+            </div>
+        </div>
+        <div class="row text-center mt-2">
+            <img src={{ path('poster', {'id': series.id} ) }}>
+        </div>
+    </div>
+    {% else %}
+        <div class="col-md-12 text-center">Aucune série trouvée.</div>
+    {% endfor %}
 </div>
 {% endblock %}
