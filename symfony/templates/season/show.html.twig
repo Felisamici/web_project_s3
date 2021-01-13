@@ -22,7 +22,7 @@
                     {% for episode in season.episodes %}
                         <li>{{ episode.number }} : {{ episode.title }} | Note : {{ episode.imdbrating }}</li>
                         {% if app.user %}
-                            <form methd="POST" action="{{ path('season_show'), {"id" : season.series.id} }}">
+                            <form methd="POST" action="{{ path('season_show', {"id" : season.series.id}) }}">
                                 <label>Vu :</label>
                                 <input id="checkBox" type="checkbox">
                             </form>

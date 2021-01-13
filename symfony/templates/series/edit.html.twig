@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Series{% endblock %}
+{% block title %}Modifier une série{% endblock %}
 
 {% block body %}
-    <h1>Edit Series</h1>
+    <h1>Modifier une série</h1>
 
     {{ include('series/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('series_index') }}">back to list</a>
+    <a href="{{ path('series_index') }}">Retour à la liste</a>
 
     {{ include('series/_delete_form.html.twig') }}
 {% endblock %}

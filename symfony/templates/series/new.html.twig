@@ -5,9 +5,10 @@
 {% block body %}
     <h1>Ajouter une série</h1>
 
-    {% if response != NULL %}
-    {% else %}
-    <span>Série non trouvée.<span>
+    {% if response is same as('False') %}
+    <span>Erreur lors de l'ajout de la série.<span>
+    {% elseif response is same as('True') %}
+    <span>Série ajoutée avec succès.</span>
     {% endif %}
 
     {{ include('series/_form.html.twig') }}

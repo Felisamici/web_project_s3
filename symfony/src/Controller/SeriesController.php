@@ -6,13 +6,15 @@ use App\Entity\Genre;
 use App\Entity\Series;
 use App\Entity\Rating;
 use App\Entity\Actor;
+use App\Entity\Season;
+use App\Entity\Episode;
 use App\Form\SeriesType;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
  * @Route("/series")
@@ -68,71 +70,118 @@ class SeriesController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        if(!($user = $this->getUser()) || !$user->getAdmin()) {
+            return $this->redirectToRoute('series_index');
+        }
+
         $series = new Series();
         $form = $this->createForm(SeriesType::class, $series);
 
         $form->handleRequest($request);
+        
+        $entityManager = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->getData('imdb') !== '') {
-                $url = "http://www.omdbapi.com/?apikey=572fd4b3&i=". $form->getData('imdb')->getImdb();
-                
-                $data = ['collection' => 'test'];
-                $r = curl_init($url);
-                curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($r, CURLOPT_POST, true);
-                curl_setopt($r, CURLOPT_POSTFIELDS,  json_encode($data));
+            try {
+                if($form->getData('imdb') !== '') {
+                    $url = "http://www.omdbapi.com/?apikey=572fd4b3&i=". $form->getData('imdb')->getImdb();
+                    
+                    $data = ['collection' => 'test'];
+                    $r = curl_init($url);
+                    curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($r, CURLOPT_POST, true);
+                    curl_setopt($r, CURLOPT_POSTFIELDS,  json_encode($data));
 
-                $response = curl_exec($r);
-                curl_close($r);
-                $response = json_decode($response);
-                dump($response);
+                    $response = curl_exec($r);
+                    curl_close($r);
+                    $response = json_decode($response);
 
-                $series->setTitle($response->Title);
-                $series->setPlot($response->Plot);
-                $series->setImdb($response->imdbID);
-                $series->setPoster(fopen($response->Poster, 'rb'));
-                $series->setDirector($response->Director);
-                $series->setAwards($response->Awards);
+                    $series->setTitle($response->Title);
+                    $series->setPlot($response->Plot);
+                    $series->setImdb($response->imdbID);
+                    $series->setPoster(fopen($response->Poster, 'rb'));
+                    $series->setDirector($response->Director);
+                    $series->setAwards($response->Awards);
 
-                $years=explode('–', $response->Year);
-                $series->setYearStart(intval($years[0]));
-                $series->setYearEnd(intval($years[1]));
+                    $years=explode('–', $response->Year);
+                    $series->setYearStart(intval($years[0]));
+                    if(count($years) > 1) {
+                        $series->setYearEnd(intval($years[1]));
+                    }
 
-                /* Ajout des genres */
-                $genresStr = explode(', ', $response->Genre);
-                $queryBuilder = $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g');
-                foreach($genresStr as $g) {
-                    $queryBuilder = $queryBuilder->orWhere("g.name='".$g."'");
+                    /* Ajout des genres */
+                    $genresStr = explode(', ', $response->Genre);
+                    $queryBuilder = $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g');
+                    foreach($genresStr as $g) {
+                        $queryBuilder = $queryBuilder->orWhere("g.name='".$g."'");
+                    }
+                    $genres = $queryBuilder->getQuery()->execute();
+
+                    foreach($genres as $g) {
+                        $series->addGenre($g);
+                    }
+
+                    /* Ajout des acteurs */
+                    $actorsStr = explode(', ', $response->Actors);
+                    $queryBuilder = $this->getDoctrine()->getRepository(Actor::class)->createQueryBuilder('a');
+                    foreach($actorsStr as $a) {
+                        $queryBuilder = $queryBuilder->orWhere("a.name='".$a."'");
+                    }
+                    $actors = $queryBuilder->getQuery()->execute();
+
+                    foreach($actors as $a) {
+                        $series->addActor($a);
+                    }
+
+                    $nbSeasons = intval($response->totalSeasons);
+                    for($i=1; $i<=$nbSeasons; $i++) {
+
+                        $season = new Season();
+                        $season->setNumber($i);
+
+                        $url = "http://www.omdbapi.com/?apikey=572fd4b3&i=". $form->getData('imdb')->getImdb()."&Season=".$i;
+
+                        $data = ['collection' => 'test'];
+                        $r = curl_init($url);
+                        curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($r, CURLOPT_POST, true);
+                        curl_setopt($r, CURLOPT_POSTFIELDS,  json_encode($data));
+
+                        $response = curl_exec($r);
+                        curl_close($r);
+                        $response = json_decode($response);
+
+                        foreach($response->Episodes as $ep) {
+                            $episode = new Episode();
+                            $episode->setTitle($ep->Title);
+                            $episode->setDate(date_create_from_format("Y-m-d", $ep->Released));
+                            $episode->setImdb($ep->imdbID);
+                            $episode->setImdbrating(floatval($ep->imdbRating));
+                            $episode->setNumber($ep->Episode);
+                            $season->addEpisode($episode);
+                            $entityManager->persist($episode);
+                        }
+                        $entityManager->persist($season);
+
+                        $series->addSeason($season);
+                    }
+
+                    $entityManager->persist($series);
+                    $entityManager->flush();
                 }
-                $genres = $queryBuilder->getQuery()->execute();
 
-                foreach($genres as $g) {
-                    $series->addGenre($g);
-                }
-
-                /* Ajout des acteurs */
-                $actorsStr = explode(', ', $response->Actors);
-                $queryBuilder = $this->getDoctrine()->getRepository(Actor::class)->createQueryBuilder('a');
-                foreach($actorsStr as $a) {
-                    $queryBuilder = $queryBuilder->orWhere("a.name='".$a."'");
-                }
-                $actors = $queryBuilder->getQuery()->execute();
-
-                foreach($actors as $a) {
-                    $series->addActor($a);
-                }
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($series);
-                $entityManager->flush();
-            }
-
-            return $this->render('series/new.html.twig', [
-                'series' => $series,
-                'form' => $form->createView(),
-                'response' => $response,
-            ]);
+                return $this->render('series/new.html.twig', [
+                    'series' => $series,
+                    'form' => $form->createView(),
+                    'response' => $response->Response,
+                ]);
+            } catch(Exception $e) {
+                return $this->render('series/new.html.twig', [
+                    'series' => $series,
+                    'form' => $form->createView(),
+                    'response' => 'False',
+                ]);
+            } 
 
         }
 
@@ -223,6 +272,10 @@ class SeriesController extends AbstractController
      */
     public function edit(Request $request, Series $series): Response
     {
+        if(!($user =$this->getUser()) || !$user->getAdmin()) {
+            return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
+        }
+
         $form = $this->createForm(SeriesType::class, $series);
         $form->handleRequest($request);
 
@@ -243,12 +296,13 @@ class SeriesController extends AbstractController
      */
     public function delete(Request $request, Series $series): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$series->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($series);
-            $entityManager->flush();
+        if(($user =$this->getUser()) && $user->getAdmin()) {
+            if ($this->isCsrfTokenValid('delete'.$series->getId(), $request->request->get('_token'))) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($series);
+                $entityManager->flush();
+            }
         }
-
         return $this->redirectToRoute('series_index');
     }
 
@@ -268,11 +322,13 @@ class SeriesController extends AbstractController
      */
     public function follow(Request $request, $id): Response
     {
-        $serie = $this->getDoctrine()->getRepository(Series::class)
-                ->findOneBy(['id' => $id]);
+        if($user = $this->getUser()) {
+            $serie = $this->getDoctrine()->getRepository(Series::class)
+                    ->findOneBy(['id' => $id]);
 
-        $serie->addUser($this->getUser());
-        $this->getDoctrine()->getManager()->flush();
+            $serie->addUser($this->getUser());
+            $this->getDoctrine()->getManager()->flush();
+        }
         return $this->redirectToRoute('series_show', ['id' => $id]);
     }
 
@@ -281,11 +337,13 @@ class SeriesController extends AbstractController
      */
     public function unfollow(Request $request, $id): Response
     {
-        $serie = $this->getDoctrine()->getRepository(Series::class)
-                ->findOneBy(['id' => $id]);
-        
-        $serie->removeUser($this->getUser());
-        $this->getDoctrine()->getManager()->flush();
+        if($user = $this->getUser()) {
+            $serie = $this->getDoctrine()->getRepository(Series::class)
+                    ->findOneBy(['id' => $id]);
+            
+            $serie->removeUser($this->getUser());
+            $this->getDoctrine()->getManager()->flush();
+        }
         return $this->redirectToRoute('series_show', ['id' => $id]);
     }
 }
