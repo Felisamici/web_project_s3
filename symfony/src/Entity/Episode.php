@@ -83,6 +83,11 @@ class Episode
         $this->user = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function isSeen(User $user) 
+    {
+        return $this->getUser()->contains($user);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
