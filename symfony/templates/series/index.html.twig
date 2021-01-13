@@ -3,41 +3,70 @@
 {% block title %}Liste des séries{% endblock %}
 
 {% block body %}
-    <h1>Liste des séries</h1>
+
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2 text-center">
+            <h1>Liste des séries</h1>
+        </div>
+        <div class="col-md-4"></div>
+        {% if app.user.admin %}
+        <div class="col-md-1"><a href=" {{ path('series_new') }}" class="btn btn-primary">Ajouter une série</a></div>
+        {% endif %}
+    </div>
 
     <hr/>
-    <h3>Recherche</h3>
+    <div class="row text-center">
+        <h3>Recherche</h3>
+    </div>
 
     <form method="GET">
-        Par genre :
-        <select name="genre">
-            <option></option>
-        {% for genre in genres %}
-            <option>{{ genre.name }}</option>
-        {% endfor %}
-        </select>
-
-        </br>
-        Par titre :
-        <input type="text" name="title"></input>
-        
-        <input type="submit" value="Rechercher">
-
-    </form>
-    <a href="{{ path('series_index') }}" class="btn btn-dark">Annuler la recherche</a>
-    </hr>
-
-    <div class="container">
-        <div class="row">
-            {% for series in series %}
-            <div class="col-md-4">
-                <div class="row text-center"><a class="btn btn-secondary" href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a></div>
-                <div class="row text-center"><img src={{ path('poster', {'id': series.id} ) }}></div>
+        <div class="row text-center">
+            <div class="col">
+                Par genre :
+                <select name="genre">
+                <option></option>
+                {% for genre in genres %}
+                    <option>{{ genre.name }}</option>
+                {% endfor %}
+                </select>
             </div>
-            {% else %}
-                <div class="col-md-12 text-center">Aucune série trouvée.</div>
-            {% endfor %}
         </div>
+        <div class="row text-center">
+            <div class="col">
+                Par titre :
+                <input type="text" name="title"></input>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col"> 
+                <input type="submit" value="Rechercher">
+            </div>
+        </div>
+        
+    </form>
+
+    <div class="row text-center mb-5">
+        <div class="col">
+            <a href="{{ path('series_index') }}" class="btn btn-dark">Annuler la recherche</a>
+        </div>
+    </div>
+
+    <div class="row mx-md-n4">
+        {% for series in series %}
+        <div class="col-md-4 px-md-4">
+            <div class="row text-center">
+                <div class="col text-center">
+                    <a class="btn btn-secondary" href={{ path('series_show', {'id': series.id})}}> {{ series.title }} </a>
+                </div>
+            </div>
+            <div class="row text-center mt-2">
+                <img src={{ path('poster', {'id': series.id} ) }}>
+            </div>
+        </div>
+        {% else %}
+            <div class="col-md-12 text-center">Aucune série trouvée.</div>
+        {% endfor %}
     </div>
 {% endblock %}
 
