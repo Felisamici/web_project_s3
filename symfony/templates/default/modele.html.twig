@@ -8,7 +8,7 @@
         }
         body {
             margin: auto;
-            width:800px;
+            width:100%;
             font-family:sans-serif;
         }
         table {
@@ -20,7 +20,11 @@
             padding:5px;
         }
         table tr:nth-child(odd) {
-            background-color:#fafafa;
+            background-color: #ededed;
+        }
+
+        table tr:nth-child(5) {
+            font-style: normal;
         }
         thead th {
             background-color:#333;
@@ -36,33 +40,32 @@
             font-size:24px;
             text-shadow:1px 1px 1px  black;
         }
-        .new {
-            color:dodgerblue;
-        }
     </style>
 {% endblock %}
 
 {% block body %}
-
+<div class="row text-center">
     <h1>Groupe : S3-B</h1>
     <h2>AGUILA--MULTNER Adrien - COFFINOT Eliott</h2>
-    En <span class="new">bleu</span>, les fonctionnalités non demandées.
+</div>
+<div class="row">
+    <div class="col">
     <table>
         <thead>
             <tr>
-                <th width="500px">Fonctionnalité</td>
-                <th>Pas&nbsp;abordée</td>
-                <th>Pas&nbsp;terminée</td>
-                <th>Fonctionnelle</td>
-                <th>Commentaire (éventuel)</td>
+                <th width="500px" class="text-center">Fonctionnalité</td>
+                <th class="text-center">Pas&nbsp;abordée</td>
+                <th class="text-center">Pas&nbsp;terminée</td>
+                <th class="text-center">Fonctionnelle</td>
+                <th class="text-center">Commentaire (éventuel)</td>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <th>Une page d'accueil présentant le site</th>
                 <td></td>
-                <td>X</td>
                 <td></td>
+                <td>X</td>
                 <td></td>
             </tr>
             <tr>
@@ -88,14 +91,14 @@
                 <td></td>
                 <td></td>
                 <td>X</td>
-                <td>Utilisation du bundle KNP_Paginator</td>
+                <td>Utilisation du bundle KNP_Paginator. Nous n'avons pas réussi à appliquer bootstrap sur la pagination.</td>
             </tr>
             <tr>
                 <th>La possibilité de naviguer dans les saisons d'une série, puis dans les épisodes</th>
                 <td></td>
                 <td></td>
                 <td>X</td>
-                <td></td>
+                <td>Il n'y a pas de page pour les épisodes, mais leurs infos sont présentées dans la page des saisons.</td>
             </tr>
             <tr>
                 <th>Chaque fois que c'est pertinent on affichera le poster de la série</th>
@@ -132,7 +135,7 @@
                 <td></td>
                 <td></td>
                 <td>X</td>
-                <td>Sauf pour l'inscription en tant qu'admin, qui n'est pas sécurisée</td>
+                <td>Sauf pour l'inscription en tant qu'admin, qui n'est pas sécurisée. Lors de l'inscription, pour créer un compte admin, appuyer sur le bouton correspondant et tapez le mot de passe "superpassword"</td>
             </tr>
             <tr>
                 <th>En étant inscrit et connecté seulement, possibilité de noter
@@ -182,17 +185,11 @@
                 <th>Un administrateur devrait pouvoir incorporer des nouvelles séries dans la base de données à l'aide de l'API <em>OMDB</em></th>
                 <td></td>
                 <td></td>
-                <td></td>
                 <td>X</td>
-                <td></td>
-            </tr>
-            <tr class="new">
-                <th>Une page de profil présentant les informations de l'utilisateur</th>
-                <td></td>
-                <td></td>
-                <td>X</td>
-                <td></td>
+                <td>L'API ne donne pas le trailer youtube, et il manque parfois des informations. L'insertion de la série ne fonctionnera alors pas. Il faut avoir le code imdb de la série pour l'ajouter.</td>
             </tr>
         </tbody>
     </table>
+    </div>
+</div>
 {% endblock %}
