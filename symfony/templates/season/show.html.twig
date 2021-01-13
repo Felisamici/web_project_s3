@@ -23,6 +23,7 @@
                         <li>{{ episode.number }} : {{ episode.title }} | Note : {{ episode.imdbrating }}</li>
                         {% if app.user %}
                             {% if episode.isSeen(app.user) %}
+                                <label>Vous avez vu cette épisode
                                 <a class="btn btn-dark" href={{ path('season_unwatched', {'season': season.id, 'id' : episode.id } ) }}>Pas vu ? Clique ici</a>
                                 {% else %}
                                 <a class="btn btn-dark" href={{ path('season_watched', {'season': season.id, 'id' : episode.id }  ) }}>Vu ? Clique ici</a>

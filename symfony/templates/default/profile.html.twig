@@ -3,9 +3,11 @@
 {% block title %} Profil {% endblock %}
 
 {% block body %}
-Nom d'utilisateur : {{ app.user.name }} </br>
-E-mail : {{ app.user.email }} </br>
-Pays : {{ app.user.country.name }} </br>
-Role : {% if app.user.admin %} Admin {% else %} Utilisateur {% endif %} </br>
-Date d'inscription : {{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }}) </br>
+<div class="container">
+    <p>Nom d'utilisateur : <mark>{{ app.user.name }}</mark></p> </br>
+    <p>E-mail : <mark>{{ app.user.email }}</mark></p> </br>
+    <p>Pays : <mark>{{ app.user.country.name }}</mark></p> </br>
+    <p>Role : <mark>{% if app.user.admin %} Admin {% else %} Utilisateur {% endif %}</mark></p> </br>
+    <p>Date d'inscription : <mark>{{ app.user.registerDate.format('d-m-Y') }} (Il y a {{ days }})</mark></p> </br>
+</div>
 {% endblock %}
