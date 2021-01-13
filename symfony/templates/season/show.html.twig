@@ -21,6 +21,17 @@
                     <ul>
                     {% for episode in season.episodes %}
                         <li>{{ episode.number }} : {{ episode.title }} | Note : {{ episode.imdbrating }}</li>
+                        {% if app.user %}
+                        <form method ="post" action ="/season/"{{ season.id }}>
+                            
+                            <label for="vu">Vu :</label>
+                            <input type="checkbox" name="vu" value="vu" onclick="window.location.reload()"
+                            <?php if (isset($_POST['vu']) ) {echo 'checked="checked"';} 
+                            dump($_POST);
+                            ?>
+                            />
+                        </form>
+                        {% endif %}
                     {% endfor %}
                     </ul>
                 </td>
