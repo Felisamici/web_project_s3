@@ -255,7 +255,7 @@ class SeriesController extends AbstractController
         ->innerJoin('r.series', 's', 'WITH', 'r.series=s.id')
         ->where('s.id = :id')
             ->setParameter('id', $series->getId())
-        ->orderBy('r.value');
+        ->orderBy('r.date', 'DESC');
 
         $rating = $query->getQuery()->execute();
 
