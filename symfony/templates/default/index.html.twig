@@ -1,16 +1,28 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<p class="text-center" style="font-size:large;">
-    {% if app.user %}
-        Bonjour {{ app.user.name }} !
-    {% else %}
-        Bonjour ! Connectez-vous ou inscrivez-vous pour avoir accès à toutes les fonctionnalités.
-    {% endif %}
-</p>
-<article>
-    <p>Bienvenue sur notre site qui est en vérité un plagiat complet </p>
-</article>
-<div class="d-flex justify-content-center">
-    <a href=" {{ path('series_index') }} " class="btn btn-dark">Voir les séries</a>
-</div>
+
+	<h1 style="text-align : center;">Page d'accueil</h1>
+	<p class="text-center" style="font-size:large;">
+		{% if app.user %}
+			Bonjour
+			{{ app.user.name }}
+			!
+		{% else %}
+			Bonjour ! Connectez-vous ou inscrivez-vous pour avoir accès à toutes les fonctionnalités.
+		{% endif %}
+	</p>
+	<div class="container">
+		<div class="row">
+			<p class="col-xs-10 col-sm-12 col-md-6 col-lg-6 text-center" style="background-color : #D1FAB0; border : solid 10px white; border-radius : 40px;">Bienvenue sur notre site qui est en vérité un plagiat complet de Netflix on ne va pas le cacher. 
+            Ce site est donc un concentré de pleins de séries connues que l'on peut suivre, en voir des informations (prix, dates, synopsis...) et même regarder la bande annonce. Il y a aussi un système de note implémenté avec un commentaire facultatif. 
+            Pour suivre une série, il va falloir d'abord la rechercher. Notre site possède une page "Toutes les séries" (dans la barre de naviguation ou le bouton juste en-dessous) qui permet de visualiser toutes les séries que nous possédons. Vous diposez d'une barre de 
+            recherche et d'un filtre en fonction du genre de la série que vous recherchez.</p>
+            <p class="col-xs-10 col-sm-12 col-md-6 col-lg-6 text-center" style="background-color : #D1FAB0; border : solid 10px white; border-radius : 40px;">Mais tout d'abord, il faut s'inscrire (comme tout site de streaming... hum comment ca ? Qui a dit streaming ?) 
+            Pour vous inscrire, rendez-vous sur la page d'inscription. Ne faites pas attention au bonton "S'inscrire en tant qu'admin" à moins que vous voudriez faire partie de l'équipe (envoyez moi un mail si cela est le cas). Une fois que c'est fait, vous êtes directement connecté. Sachez que vous pouvez consulter les séries présentes même sans être connecté, mais vous n'avez 
+            pas accès à toutes les fonctionnalités. Amusez-vous bien !</p>
+		</div>
+	</div>
+	<div class="d-flex justify-content-center">
+		<a href=" {{ path('series_index') }} " class="btn btn-dark">Voir les séries</a>
+	</div>
 {% endblock %}
