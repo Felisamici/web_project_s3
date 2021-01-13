@@ -85,27 +85,27 @@ class SeasonController extends AbstractController
     /**
      * @Route("{season}/watched/{id}", name="season_watched")
      */
-    public function watched($episodeid, $seasonid): Response
+    public function watched($season, $id): Response
     {
         $episode = $this->getDoctrine()->getRepository(Episode::class)
-                ->findOneBy(['id' => $episodeid]);
+                ->findOneBy(['id' => $id]);
 
         $episode->addUser($this->getUser());
         $this->getDoctrine()->getManager()->flush();
-        return $this->redirectToRoute('season_show', ['id' => $seasonid]);
+        return $this->redirectToRoute('season_show', ['id' => $season]);
     }
 
     /**
      * @Route("{season}/unwatched/{id}", name="season_unwatched")
      */
-    public function unwatched($episodeid, $seasonid): Response
+    public function unwatched($season, $id): Response
     {
         $episode = $this->getDoctrine()->getRepository(Episode::class)
-                ->findOneBy(['id' => $episodeid]);
+                ->findOneBy(['id' => $id]);
 
         $episode->removeUser($this->getUser());
         $this->getDoctrine()->getManager()->flush();
-        return $this->redirectToRoute('season_show', ['id' => $seasonid]);
+        return $this->redirectToRoute('season_show', ['id' => $season]);
     }
 
     /**
