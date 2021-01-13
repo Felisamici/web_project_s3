@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Season;
+use App\Entity\Episode;
 use App\Form\SeasonType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,6 +80,32 @@ class SeasonController extends AbstractController
             'season' => $season,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("{season}/watched/{id}", name="season_watched")
+     */
+    public function watched($episodeid, $seasonid): Response
+    {
+        $episode = $this->getDoctrine()->getRepository(Episode::class)
+                ->findOneBy(['id' => $episodeid]);
+
+        $episode->addUser($this->getUser());
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('season_show', ['id' => $seasonid]);
+    }
+
+    /**
+     * @Route("{season}/unwatched/{id}", name="season_unwatched")
+     */
+    public function unwatched($episodeid, $seasonid): Response
+    {
+        $episode = $this->getDoctrine()->getRepository(Episode::class)
+                ->findOneBy(['id' => $episodeid]);
+
+        $episode->removeUser($this->getUser());
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('season_show', ['id' => $seasonid]);
     }
 
     /**
